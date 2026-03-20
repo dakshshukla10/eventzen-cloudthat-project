@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  user-service:
+    build: ./user-service
+    container_name: eventzen-user-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    networks:
+      - eventzen-network
+    restart: unless-stopped
+
+  venue-service:
+    build: ./venue-service
+    container_name: eventzen-venue-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    networks:
+      - eventzen-network
+    restart: unless-stopped
+
+  event-service:
+    build: ./event-service
+    container_name: eventzen-event-service
+    ports:
+      - "8083:8083"
+    environment:
+      - SPRING_PROFILES_ACTIVE=default
+    networks:
+      - eventzen-network
+    restart: unless-stopped
+
+  frontend:
+    build: ./frontend
+    container_name: eventzen-frontend
+    ports:
+      - "5173:80"
+    depends_on:
+      - user-service
+      - venue-service
+      - event-service
+    networks:
+      - eventzen-network
+    restart: unless-stopped
+
+networks:
+  eventzen-network:
+    driver: bridge
