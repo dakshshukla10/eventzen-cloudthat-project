@@ -29,6 +29,8 @@ public class Event {
     @NotNull(message = "Venue ID is required")
     private Long venueId;
 
+    private Long vendorId;
+
     private Long organizerId;
 
     @Enumerated(EnumType.STRING)
