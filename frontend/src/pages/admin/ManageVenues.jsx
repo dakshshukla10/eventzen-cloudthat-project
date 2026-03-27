@@ -1,7 +1,16 @@
 import { useState, useEffect } from 'react';
 import { getVenues, createVenue, updateVenue, deleteVenue } from '../../services/api';
 
-const emptyVenue = { name: '', location: '', capacity: '', description: '', pricePerHour: '', imageUrl: '' };
+const emptyVenue = {
+  name: '',
+  location: '',
+  capacity: '',
+  description: '',
+  pricePerHour: '',
+  imageUrl: '',
+  contactEmail: '',
+  phone: '',
+};
 
 export default function ManageVenues() {
   const [venues, setVenues] = useState([]);
@@ -39,7 +48,8 @@ export default function ManageVenues() {
       setForm(emptyVenue);
       loadVenues();
     } catch (err) {
-      alert(err.response?.data?.message || 'Failed to save venue');
+      const validationErrors = err.response?.data?.errors;
+      alert(Array.isArray(validationErrors) ? validationErrors.join('\n') : 'Failed to save venue');
     }
   };
 
@@ -51,6 +61,8 @@ export default function ManageVenues() {
       description: venue.description || '',
       pricePerHour: venue.pricePerHour,
       imageUrl: venue.imageUrl || '',
+      contactEmail: venue.contactEmail || '',
+      phone: venue.phone || '',
     });
     setEditing(venue.id);
     setShowForm(true);
@@ -106,6 +118,21 @@ export default function ManageVenues() {
           <div className="form-group">
             <label>Image URL</label>
             <input value={form.imageUrl} onChange={(e) => setForm({ ...form, imageUrl: e.target.value })} />
+          </div>
+          <div className="form-row">
+            <div className="form-group">
+              <label>Contact Email</label>
+              <input
+                type="email"
+                value={form.contactEmail}
+                onChange={(e) => setForm({ ...form, contactEmail: e.target.value })}
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label>Phone</label>
+              <input value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
+            </div>
           </div>
           <button type="submit" className="btn btn-primary">{editing ? 'Update' : 'Create'} Venue</button>
         </form>

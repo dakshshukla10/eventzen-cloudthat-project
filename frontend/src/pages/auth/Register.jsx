@@ -16,7 +16,9 @@ export default function Register() {
       await register(form);
       navigate('/login', { state: { message: 'Registration successful! Please login.' } });
     } catch (err) {
-      setError(err.response?.data?.message || 'Registration failed. Please try again.');
+      const data = err.response?.data;
+      const msg = data?.error || (data?.errors && data.errors.join(', ')) || data?.message;
+      setError(msg || (err.response ? 'Registration failed. Please try again.' : 'Cannot connect to server. Make sure the backend is running.'));
     } finally {
       setLoading(false);
     }
